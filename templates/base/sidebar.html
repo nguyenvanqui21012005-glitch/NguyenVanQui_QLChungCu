@@ -1,0 +1,82 @@
+{% load nav %}
+<aside id="sidebar" class="w-64 bg-slate-800 text-slate-300 flex flex-col min-h-screen flex-shrink-0 transition-all duration-300">
+  <div class="flex items-center gap-3 px-6 py-5 border-b border-slate-700">
+    <div class="w-9 h-9 bg-blue-600 rounded-lg flex items-center justify-center">
+      <i class="fa-solid fa-building text-white text-lg"></i>
+    </div>
+    <div>
+      <p class="font-bold text-white text-sm leading-tight">ApartmentMS</p>
+      <p class="text-xs text-slate-400">Quản lý chung cư</p>
+    </div>
+  </div>
+
+  <nav class="flex-1 py-4 overflow-y-auto">
+    <ul class="space-y-0.5 px-3">
+      <li>
+        <a href="{% url 'dashboard' %}" class="sidebar-link {% active_link 'dashboard' %}">
+          <i class="fa-solid fa-gauge-high w-5 text-center"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+
+      {% if user.profile.role == 'ADMIN' %}
+      <li class="pt-4"><p class="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Tòa nhà</p></li>
+      <li><a href="{% url 'building_list' %}" class="sidebar-link {% active_link 'building' %}"><i class="fa-solid fa-building w-5 text-center"></i><span>Tòa nhà</span></a></li>
+      <li><a href="{% url 'apartment_list' %}" class="sidebar-link {% active_link 'apartment' %}"><i class="fa-solid fa-door-open w-5 text-center"></i><span>Căn hộ</span></a></li>
+
+      <li class="pt-4"><p class="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Cư dân</p></li>
+      <li><a href="{% url 'resident_list' %}" class="sidebar-link"><i class="fa-solid fa-users w-5 text-center"></i><span>Cư dân</span></a></li>
+      <li><a href="{% url 'contract_list' %}" class="sidebar-link"><i class="fa-solid fa-file-contract w-5 text-center"></i><span>Hợp đồng</span></a></li>
+
+      <li class="pt-4"><p class="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Tài chính</p></li>
+      <li><a href="{% url 'invoice_list' %}" class="sidebar-link"><i class="fa-solid fa-file-invoice-dollar w-5 text-center"></i><span>Hóa đơn</span>{% if overdue_invoice_count > 0 %}<span class="ml-auto bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">{{ overdue_invoice_count }}</span>{% endif %}</a></li>
+      <li><a href="{% url 'payment_list' %}" class="sidebar-link"><i class="fa-solid fa-money-bill-wave w-5 text-center"></i><span>Thanh toán</span></a></li>
+      <li><a href="{% url 'fee_type_list' %}" class="sidebar-link"><i class="fa-solid fa-tags w-5 text-center"></i><span>Loại phí</span></a></li>
+
+      <li class="pt-4"><p class="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Vận hành</p></li>
+      <li><a href="{% url 'maintenance_list' %}" class="sidebar-link"><i class="fa-solid fa-screwdriver-wrench w-5 text-center"></i><span>Bảo trì</span>{% if pending_maintenance_count > 0 %}<span class="ml-auto bg-orange-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">{{ pending_maintenance_count }}</span>{% endif %}</a></li>
+      <li><a href="{% url 'vehicle_list' %}" class="sidebar-link"><i class="fa-solid fa-car w-5 text-center"></i><span>Xe & Bãi đậu</span></a></li>
+      <li><a href="{% url 'visitor_list' %}" class="sidebar-link"><i class="fa-solid fa-user-clock w-5 text-center"></i><span>Khách thăm</span></a></li>
+
+      <li class="pt-4"><p class="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Báo cáo</p></li>
+      <li><a href="{% url 'report_finance' %}" class="sidebar-link"><i class="fa-solid fa-chart-line w-5 text-center"></i><span>Tài chính</span></a></li>
+      <li><a href="{% url 'report_debt' %}" class="sidebar-link"><i class="fa-solid fa-triangle-exclamation w-5 text-center"></i><span>Công nợ (ML)</span></a></li>
+      <li><a href="{% url 'report_occupancy' %}" class="sidebar-link"><i class="fa-solid fa-chart-pie w-5 text-center"></i><span>Tỷ lệ lấp đầy</span></a></li>
+      <li><a href="{% url 'report_maintenance' %}" class="sidebar-link"><i class="fa-solid fa-screwdriver-wrench w-5 text-center"></i><span>Bảo trì</span></a></li>
+      <li><a href="{% url 'report_export' %}" class="sidebar-link"><i class="fa-solid fa-file-export w-5 text-center"></i><span>Xuất dữ liệu</span></a></li>
+
+      <li class="pt-4"><p class="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Quản trị</p></li>
+      <li><a href="{% url 'staff_list' %}" class="sidebar-link"><i class="fa-solid fa-user-tie w-5 text-center"></i><span>Nhân viên</span></a></li>
+      <li><a href="{% url 'announcement_list' %}" class="sidebar-link"><i class="fa-solid fa-bullhorn w-5 text-center"></i><span>Thông báo</span></a></li>
+      {% else %}
+      <li class="pt-4"><p class="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Công việc</p></li>
+      <li><a href="{% url 'maintenance_my_tasks' %}" class="sidebar-link"><i class="fa-solid fa-list-check w-5 text-center"></i><span>Việc của tôi</span>{% if my_maintenance_count > 0 %}<span class="ml-auto bg-orange-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">{{ my_maintenance_count }}</span>{% endif %}</a></li>
+      <li><a href="{% url 'visitor_create' %}" class="sidebar-link"><i class="fa-solid fa-user-plus w-5 text-center"></i><span>Đăng ký khách</span></a></li>
+      <li><a href="{% url 'visitor_today' %}" class="sidebar-link"><i class="fa-solid fa-user-clock w-5 text-center"></i><span>Khách hôm nay</span></a></li>
+
+      <li class="pt-4"><p class="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Xem</p></li>
+      <li><a href="{% url 'invoice_list' %}" class="sidebar-link"><i class="fa-solid fa-file-invoice-dollar w-5 text-center"></i><span>Hóa đơn & Thu phí</span></a></li>
+      <li><a href="{% url 'resident_list' %}" class="sidebar-link"><i class="fa-solid fa-users w-5 text-center"></i><span>Cư dân</span></a></li>
+      <li><a href="{% url 'vehicle_list' %}" class="sidebar-link"><i class="fa-solid fa-car w-5 text-center"></i><span>Phương tiện</span></a></li>
+      <li><a href="{% url 'announcement_list' %}" class="sidebar-link"><i class="fa-solid fa-bullhorn w-5 text-center"></i><span>Thông báo</span></a></li>
+      {% endif %}
+    </ul>
+  </nav>
+
+  <div class="border-t border-slate-700 p-4">
+    <div class="flex items-center gap-3">
+      {% if user.profile.avatar %}
+      <img src="{{ user.profile.avatar.url }}" class="w-9 h-9 rounded-full object-cover ring-2 ring-slate-600" alt="">
+      {% else %}
+      <div class="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-sm">
+        {{ user.first_name.0 }}{{ user.last_name.0 }}
+      </div>
+      {% endif %}
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-medium text-white truncate">{{ user.get_full_name }}</p>
+        <p class="text-xs text-slate-400 truncate">{{ user.profile.get_role_display }}</p>
+      </div>
+      <a href="{% url 'profile' %}" class="text-slate-400 hover:text-white transition-colors"><i class="fa-solid fa-gear text-sm"></i></a>
+    </div>
+  </div>
+</aside>

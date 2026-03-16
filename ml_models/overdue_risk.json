@@ -1,0 +1,112 @@
+{
+  "trained_at": "2026-03-15T16:17:30.216287+00:00",
+  "train_size": 216,
+  "test_size": 54,
+  "roc_auc": 0.6690340909090909,
+  "confusion_matrix": {
+    "tn": 7,
+    "fp": 25,
+    "fn": 0,
+    "tp": 22
+  },
+  "top_positive": [
+    {
+      "feature": "fee_type_id=5",
+      "weight": 0.1145413598437406
+    },
+    {
+      "feature": "apartment_prev_avg_delay",
+      "weight": 0.10136512385168328
+    },
+    {
+      "feature": "resident_prev_avg_delay",
+      "weight": 0.10136512385168328
+    },
+    {
+      "feature": "apartment_on_time_streak",
+      "weight": 0.0985496314126226
+    },
+    {
+      "feature": "resident_on_time_streak",
+      "weight": 0.0985496314126226
+    },
+    {
+      "feature": "apartment_prev_invoices",
+      "weight": 0.08935993233840678
+    },
+    {
+      "feature": "resident_prev_invoices",
+      "weight": 0.08935993233840678
+    },
+    {
+      "feature": "amount",
+      "weight": 0.08808057780023766
+    },
+    {
+      "feature": "fee_prev_invoices",
+      "weight": 0.08422271847460432
+    },
+    {
+      "feature": "apartment_prev_late_rate",
+      "weight": 0.0785784173958162
+    },
+    {
+      "feature": "resident_prev_late_rate",
+      "weight": 0.0785784173958162
+    },
+    {
+      "feature": "fee_unit=MONTH",
+      "weight": 0.058246928650768526
+    }
+  ],
+  "top_negative": [
+    {
+      "feature": "fee_prev_late_rate",
+      "weight": -0.318053952072482
+    },
+    {
+      "feature": "resident_id=5",
+      "weight": -0.06676352327267808
+    },
+    {
+      "feature": "apartment_id=16",
+      "weight": -0.06676352327267808
+    },
+    {
+      "feature": "fee_unit=M2",
+      "weight": -0.058294126892440026
+    },
+    {
+      "feature": "fee_type_id=1",
+      "weight": -0.058294126892440026
+    },
+    {
+      "feature": "month",
+      "weight": -0.05766726842882815
+    },
+    {
+      "feature": "fee_type_id=4",
+      "weight": -0.05629443118145743
+    },
+    {
+      "feature": "apartment_area",
+      "weight": -0.0558657184165958
+    },
+    {
+      "feature": "resident_id=4",
+      "weight": -0.04915718598830265
+    },
+    {
+      "feature": "apartment_id=22",
+      "weight": -0.04915718598830265
+    },
+    {
+      "feature": "building_id=1",
+      "weight": -0.0005746235058825072
+    },
+    {
+      "feature": "due_day",
+      "weight": -0.0003337419833489658
+    }
+  ]
+}

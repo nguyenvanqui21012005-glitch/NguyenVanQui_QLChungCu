@@ -1,0 +1,171 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<h2 class="text-lg font-semibold text-gray-900 mb-4">Danh sách nợ phí</h2>
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-4">
+  <p class="text-sm text-gray-500">Tổng nợ</p>
+  <p class="text-2xl font-bold">{{ total_debt }}</p>
+</div>
+
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-6">
+  <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between gap-4">
+    <h3 class="font-semibold text-gray-900">Nguy cơ trễ hạn (ML)</h3>
+    <div class="flex items-center gap-2">
+      {% if model_available %}
+      <a class="ui-btn ui-btn-secondary ui-btn-sm" href="?download=ml_dataset&view=1">Xem dataset CSV</a>
+      {% endif %}
+      {% if not model_available %}
+      <span class="text-xs text-gray-500">Chưa có model. Chạy: python manage.py train_overdue_risk</span>
+      {% endif %}
+    </div>
+  </div>
+
+  {% if model_available and model_meta %}
+  <div class="px-6 py-4 border-b border-gray-100">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div class="bg-gray-50 rounded-xl border border-gray-200 p-4">
+        <p class="text-xs text-gray-500">ROC-AUC</p>
+        <p class="text-lg font-semibold">{{ model_meta.roc_auc }}</p>
+      </div>
+      <div class="bg-gray-50 rounded-xl border border-gray-200 p-4">
+        <p class="text-xs text-gray-500">Train size</p>
+        <p class="text-lg font-semibold">{{ model_meta.train_size }}</p>
+      </div>
+      <div class="bg-gray-50 rounded-xl border border-gray-200 p-4">
+        <p class="text-xs text-gray-500">Test size</p>
+        <p class="text-lg font-semibold">{{ model_meta.test_size }}</p>
+      </div>
+      <div class="bg-gray-50 rounded-xl border border-gray-200 p-4">
+        <p class="text-xs text-gray-500">Confusion matrix</p>
+        <p class="text-sm text-gray-700 mt-1">
+          TN {{ model_meta.confusion_matrix.tn }} · FP {{ model_meta.confusion_matrix.fp }} ·
+          FN {{ model_meta.confusion_matrix.fn }} · TP {{ model_meta.confusion_matrix.tp }}
+        </p>
+      </div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+      <div class="bg-white rounded-xl border border-gray-200 p-4">
+        <p class="text-sm font-semibold text-gray-900 mb-2">Top yếu tố tăng rủi ro</p>
+        <div class="space-y-1">
+          {% for item in model_meta.top_positive %}
+          <div class="flex items-center justify-between gap-3 text-sm">
+            <span class="text-gray-700 truncate">{{ item.feature }}</span>
+            <span class="text-gray-500">{{ item.weight }}</span>
+          </div>
+          {% empty %}
+          <p class="text-sm text-gray-400">Chưa có</p>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="bg-white rounded-xl border border-gray-200 p-4">
+        <p class="text-sm font-semibold text-gray-900 mb-2">Top yếu tố giảm rủi ro</p>
+        <div class="space-y-1">
+          {% for item in model_meta.top_negative %}
+          <div class="flex items-center justify-between gap-3 text-sm">
+            <span class="text-gray-700 truncate">{{ item.feature }}</span>
+            <span class="text-gray-500">{{ item.weight }}</span>
+          </div>
+          {% empty %}
+          <p class="text-sm text-gray-400">Chưa có</p>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% if risk_hist_labels and risk_hist_values %}
+    <div class="bg-white rounded-xl border border-gray-200 p-4 mt-4">
+      <p class="text-sm font-semibold text-gray-900 mb-3">Phân phối rủi ro dự báo</p>
+      {{ risk_hist_labels|json_script:"risk-hist-labels" }}
+      {{ risk_hist_values|json_script:"risk-hist-values" }}
+      <div class="h-56">
+        <canvas id="riskHistChart"></canvas>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  <div class="overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Rủi ro</th>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Cư dân</th>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Căn</th>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Loại phí</th>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Hạn</th>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Số tiền</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-100">
+        {% for inv in open_invoices %}
+        <tr>
+          <td class="px-6 py-4 text-sm">
+            {% if inv.risk_score >= 70 %}
+            <span class="ui-badge ui-badge-danger">{{ inv.risk_score }}%</span>
+            {% elif inv.risk_score >= 40 %}
+            <span class="ui-badge ui-badge-warning">{{ inv.risk_score }}%</span>
+            {% else %}
+            <span class="ui-badge ui-badge-success">{{ inv.risk_score }}%</span>
+            {% endif %}
+          </td>
+          <td class="px-6 py-4 text-sm">{{ inv.resident.full_name }}</td>
+          <td class="px-6 py-4 text-sm">{{ inv.apartment.apartment_number }}</td>
+          <td class="px-6 py-4 text-sm">{{ inv.fee_type.name }}</td>
+          <td class="px-6 py-4 text-sm">{{ inv.due_date }}</td>
+          <td class="px-6 py-4 text-sm">{{ inv.amount }}</td>
+        </tr>
+        {% empty %}
+        <tr><td class="px-6 py-8 text-center text-sm text-gray-400" colspan="6">Không có dữ liệu</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+  <div class="overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Cư dân</th>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Căn</th>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Loại phí</th>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Kỳ</th>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Số tiền</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-100">
+        {% for inv in overdue_invoices %}
+        <tr>
+          <td class="px-6 py-4 text-sm">{{ inv.resident.full_name }}</td>
+          <td class="px-6 py-4 text-sm">{{ inv.apartment.apartment_number }}</td>
+          <td class="px-6 py-4 text-sm">{{ inv.fee_type.name }}</td>
+          <td class="px-6 py-4 text-sm">{{ inv.month }}/{{ inv.year }}</td>
+          <td class="px-6 py-4 text-sm">{{ inv.amount }}</td>
+        </tr>
+        {% empty %}
+        <tr><td class="px-6 py-8 text-center text-sm text-gray-400" colspan="5">Không có dữ liệu</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+const histLabelsEl = document.getElementById('risk-hist-labels');
+const histValuesEl = document.getElementById('risk-hist-values');
+const histCanvas = document.getElementById('riskHistChart');
+if (histLabelsEl && histValuesEl && histCanvas) {
+  const labels = JSON.parse(histLabelsEl.textContent);
+  const values = JSON.parse(histValuesEl.textContent);
+  new Chart(histCanvas, {
+    type: 'bar',
+    data: { labels, datasets: [{ data: values, backgroundColor: '#2563EB' }] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+  });
+}
+</script>
+{% endblock %}

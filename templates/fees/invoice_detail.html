@@ -1,0 +1,50 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-4">
+  <h2 class="text-lg font-semibold text-gray-900">Chi tiết hóa đơn</h2>
+  <a href="{% url 'invoice_list' %}" class="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium">Quay lại</a>
+</div>
+
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+    <div><p class="text-gray-500">Cư dân</p><p class="text-gray-900 font-medium">{{ invoice.resident.full_name }}</p></div>
+    <div><p class="text-gray-500">Căn hộ</p><p class="text-gray-900 font-medium">{{ invoice.apartment.apartment_number }}</p></div>
+    <div><p class="text-gray-500">Loại phí</p><p class="text-gray-900 font-medium">{{ invoice.fee_type.name }}</p></div>
+    <div><p class="text-gray-500">Kỳ</p><p class="text-gray-900 font-medium">{{ invoice.month }}/{{ invoice.year }}</p></div>
+    <div><p class="text-gray-500">Số tiền</p><p class="text-gray-900 font-medium">{{ invoice.amount }}</p></div>
+    <div><p class="text-gray-500">Trạng thái</p><p class="text-gray-900 font-medium">{{ invoice.get_status_display }}</p></div>
+  </div>
+
+  <div class="mt-4 flex gap-2">
+    <a href="{% url 'invoice_pay' invoice.pk %}" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium">Ghi nhận thanh toán</a>
+    {% if user.profile.role == 'ADMIN' %}
+    <form method="post" action="{% url 'invoice_cancel' invoice.pk %}">
+      {% csrf_token %}
+      <button type="submit" class="ui-btn ui-btn-danger js-delete" data-item="Hóa đơn #{{ invoice.pk }}">Hủy hóa đơn</button>
+    </form>
+    {% endif %}
+  </div>
+</div>
+
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mt-6">
+  <h3 class="font-semibold text-gray-900 mb-3">Lịch sử thanh toán</h3>
+  <div class="space-y-2 text-sm">
+    {% for p in payments %}
+    <div class="flex items-center justify-between gap-4">
+      <span class="text-gray-700">{{ p.paid_at }}</span>
+      <div class="flex items-center gap-3">
+        <span class="text-gray-900 font-medium">{{ p.amount_paid }}</span>
+        {% if p.receipt_image %}
+        <a href="{{ p.receipt_image.url }}" target="_blank" rel="noreferrer">
+          <img src="{{ p.receipt_image.url }}" alt="" class="h-10 w-10 rounded-lg object-cover border border-gray-200">
+        </a>
+        {% endif %}
+      </div>
+    </div>
+    {% empty %}
+    <p class="text-sm text-gray-400">Chưa có thanh toán</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

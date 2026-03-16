@@ -1,0 +1,50 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-4">
+  <h2 class="text-lg font-semibold text-gray-900">Dataset Overdue Risk (CSV)</h2>
+  <div class="flex items-center gap-2">
+    <a href="{% url 'report_debt' %}" class="ui-btn ui-btn-secondary">Quay lại</a>
+    <button type="button" class="ui-btn ui-btn-primary" id="downloadCsvBtn">Tải file CSV</button>
+  </div>
+</div>
+
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+  <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between gap-4">
+    <p class="text-sm text-gray-600">Rows: <span class="font-semibold">{{ row_count }}</span> · Cols: <span class="font-semibold">{{ col_count }}</span></p>
+    <button type="button" class="ui-btn ui-btn-secondary ui-btn-sm" id="copyCsvBtn">Copy CSV</button>
+  </div>
+  <div class="p-4">
+    <textarea id="csvText" class="ui-textarea font-mono text-xs" rows="22" readonly>{{ csv_text }}</textarea>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const csvEl = document.getElementById('csvText');
+document.getElementById('copyCsvBtn')?.addEventListener('click', async () => {
+  if (!csvEl) return;
+  csvEl.select();
+  try {
+    await navigator.clipboard.writeText(csvEl.value);
+  } catch (e) {
+    document.execCommand('copy');
+  }
+});
+
+document.getElementById('downloadCsvBtn')?.addEventListener('click', () => {
+  if (!csvEl) return;
+  const blob = new Blob([csvEl.value], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'overdue_risk_dataset.csv';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+});
+</script>
+{% endblock %}
+

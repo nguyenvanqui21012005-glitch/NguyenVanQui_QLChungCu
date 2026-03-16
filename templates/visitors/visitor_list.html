@@ -1,0 +1,32 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<h2 class="text-lg font-semibold text-gray-900 mb-4">Lịch sử khách thăm</h2>
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+  <div class="overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Khách</th>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Căn</th>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Check-in</th>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Check-out</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-100">
+        {% for v in page_obj %}
+        <tr>
+          <td class="px-6 py-4 text-sm">{{ v.full_name }}</td>
+          <td class="px-6 py-4 text-sm">{{ v.visit_apartment.apartment_number }}</td>
+          <td class="px-6 py-4 text-sm">{{ v.check_in }}</td>
+          <td class="px-6 py-4 text-sm">{{ v.check_out|default:"-" }}</td>
+        </tr>
+        {% empty %}
+        <tr><td class="px-6 py-8 text-center text-sm text-gray-400" colspan="4">Không có dữ liệu</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+

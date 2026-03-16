@@ -1,0 +1,90 @@
+{% extends 'base/base.html' %}
+{% load ui_extras %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-4">
+  <h2 class="text-lg font-semibold text-gray-900">Căn hộ</h2>
+  {% if user.profile.role == 'ADMIN' %}
+  <a href="{% url 'apartment_create' %}" class="ui-btn ui-btn-primary">Thêm căn hộ</a>
+  {% endif %}
+</div>
+
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+  <div class="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
+    <form class="flex items-center gap-2 flex-wrap">
+      <input name="q" value="{{ q }}" placeholder="Tìm..." class="ui-input max-w-xs">
+      <select name="building" class="ui-select max-w-xs">
+        <option value="">-- Tòa nhà --</option>
+        {% for b in buildings %}
+        <option value="{{ b.pk }}" {% if current_building|stringformat:"s" == b.pk|stringformat:"s" %}selected{% endif %}>{{ b.name }}</option>
+        {% endfor %}
+      </select>
+      <select name="status" class="ui-select max-w-xs">
+        <option value="">-- Trạng thái --</option>
+        {% for v, label in status_choices %}
+        <option value="{{ v }}" {% if current_status == v %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+      <button class="ui-btn ui-btn-secondary">Lọc</button>
+    </form>
+  </div>
+  <div class="overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Ảnh</th>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Căn</th>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Tòa</th>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Tầng</th>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Trạng thái</th>
+          <th class="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase">Thao tác</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-100">
+        {% for a in page_obj %}
+        <tr>
+          <td class="px-6 py-4">
+            {% if a.image %}
+            <img src="{{ a.image.url }}" alt="" class="h-10 w-10 rounded-lg object-cover border border-gray-200">
+            {% else %}
+            <div class="h-10 w-10 rounded-lg bg-gray-100 border border-gray-200"></div>
+            {% endif %}
+          </td>
+          <td class="px-6 py-4 text-sm">{{ a.apartment_number }}</td>
+          <td class="px-6 py-4 text-sm">{{ a.floor.building.name }}</td>
+          <td class="px-6 py-4 text-sm">{{ a.floor.floor_number }}</td>
+          <td class="px-6 py-4 text-sm">
+            <div class="flex items-center gap-2">
+              <span class="ui-badge {{ a.status|badge_class }}">{{ a.get_status_display }}</span>
+              {% if user.profile.role == 'ADMIN' %}
+              <form method="post" action="{% url 'apartment_status' a.pk %}" class="flex items-center gap-2">
+                {% csrf_token %}
+                <select name="status" class="ui-select ui-select-xs">
+                  {% for v, label in status_choices %}
+                    {% if v != 'OCCUPIED' %}
+                    <option value="{{ v }}" {% if a.status == v %}selected{% endif %}>{{ label }}</option>
+                    {% endif %}
+                  {% endfor %}
+                </select>
+                <button class="ui-btn ui-btn-secondary ui-btn-xs" type="submit">Lưu</button>
+              </form>
+              {% endif %}
+            </div>
+          </td>
+          <td class="px-6 py-4 text-sm text-right">
+            {% if user.profile.role == 'ADMIN' %}
+            <div class="ui-action-group">
+              <a href="{% url 'apartment_edit' a.pk %}" class="ui-btn ui-btn-secondary ui-btn-xs">Sửa</a>
+              <form method="post" action="{% url 'apartment_delete' a.pk %}">{% csrf_token %}<button class="ui-btn ui-btn-danger ui-btn-xs js-delete" data-item="Căn {{ a.apartment_number }}" type="submit">Xóa</button></form>
+            </div>
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td class="px-6 py-8 text-center text-sm text-gray-400" colspan="6">Không có dữ liệu</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

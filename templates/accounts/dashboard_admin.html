@@ -1,0 +1,128 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+    <p class="text-sm text-gray-500">Tòa nhà</p>
+    <p class="text-2xl font-bold">{{ total_buildings }}</p>
+  </div>
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+    <p class="text-sm text-gray-500">Căn hộ</p>
+    <p class="text-2xl font-bold">{{ total_apartments }}</p>
+  </div>
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+    <p class="text-sm text-gray-500">Đang ở</p>
+    <p class="text-2xl font-bold">{{ occupied_apartments }}</p>
+  </div>
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+    <p class="text-sm text-gray-500">Trống</p>
+    <p class="text-2xl font-bold">{{ available_apartments }}</p>
+  </div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+    <p class="text-sm text-gray-500">Doanh thu tháng này</p>
+    <p class="text-2xl font-bold">{{ revenue_this_month }}</p>
+  </div>
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+    <p class="text-sm text-gray-500">Doanh thu tháng trước</p>
+    <p class="text-2xl font-bold">{{ revenue_prev_month }}</p>
+  </div>
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+    <p class="text-sm text-gray-500">Thanh toán đúng hạn</p>
+    <p class="text-2xl font-bold">{{ on_time_rate }}%</p>
+  </div>
+</div>
+
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mt-6">
+  <h3 class="font-semibold text-gray-900 mb-4">Tình trạng căn hộ</h3>
+  <div class="h-64">
+    <canvas id="occupancyChart"></canvas>
+  </div>
+</div>
+
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mt-6">
+  <h3 class="font-semibold text-gray-900 mb-4">Doanh thu tháng này vs tháng trước</h3>
+  {{ revenue_labels|json_script:"revenue-labels" }}
+  {{ revenue_values|json_script:"revenue-values" }}
+  <div class="h-64">
+    <canvas id="revenueChart"></canvas>
+  </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-6">
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+    <h3 class="font-semibold text-gray-900 mb-3">Hợp đồng gần đây</h3>
+    <div class="space-y-2">
+      {% for c in recent_contracts %}
+      <div class="flex justify-between text-sm">
+        <span class="text-gray-700">{{ c.resident.full_name }}</span>
+        <span class="text-gray-500">{{ c.apartment.apartment_number }}</span>
+      </div>
+      {% empty %}
+      <p class="text-sm text-gray-400">Chưa có dữ liệu</p>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+    <h3 class="font-semibold text-gray-900 mb-3">Bảo trì đang chờ</h3>
+    <div class="space-y-2">
+      {% for m in recent_maintenance %}
+      <div class="flex justify-between text-sm">
+        <span class="text-gray-700">{{ m.title }}</span>
+        <span class="text-gray-500">{{ m.apartment.apartment_number }}</span>
+      </div>
+      {% empty %}
+      <p class="text-sm text-gray-400">Chưa có dữ liệu</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+const occupancyCtx = document.getElementById('occupancyChart');
+if (occupancyCtx) {
+  new Chart(occupancyCtx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Đang ở', 'Trống', 'Bảo trì'],
+      datasets: [{
+        data: [{{ occupied_apartments|default:0 }}, {{ available_apartments|default:0 }}, {{ maintenance_apartments|default:0 }}],
+        backgroundColor: ['#16A34A', '#2563EB', '#D97706'],
+        borderWidth: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom' } }
+    }
+  });
+}
+
+const revenueLabelsEl = document.getElementById('revenue-labels');
+const revenueValuesEl = document.getElementById('revenue-values');
+const revenueCanvas = document.getElementById('revenueChart');
+if (revenueLabelsEl && revenueValuesEl && revenueCanvas) {
+  const labels = JSON.parse(revenueLabelsEl.textContent);
+  const values = JSON.parse(revenueValuesEl.textContent);
+  new Chart(revenueCanvas, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{ data: values, backgroundColor: ['#64748B', '#2563EB'] }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } }
+    }
+  });
+}
+</script>
+{% endblock %}

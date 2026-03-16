@@ -1,0 +1,65 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}ApartmentMS{% endblock %} | Quản lý chung cư</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body class="h-full bg-gray-50">
+
+{% if user.is_authenticated %}
+  <div class="flex h-full">
+    {% include 'base/sidebar.html' %}
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+      {% include 'base/navbar.html' %}
+      <main class="flex-1 overflow-y-auto">
+        {% if messages %}
+        <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2 w-full max-w-sm px-4 sm:px-0">
+          {% for message in messages %}
+          <div class="ui-toast {% if message.tags == 'success' %}ui-toast-success{% elif message.tags == 'error' %}ui-toast-error{% elif message.tags == 'warning' %}ui-toast-warning{% else %}ui-toast-info{% endif %}" data-timeout="4500">
+            <i class="fa-solid {% if message.tags == 'success' %}fa-circle-check{% elif message.tags == 'error' %}fa-circle-xmark{% elif message.tags == 'warning' %}fa-triangle-exclamation{% else %}fa-circle-info{% endif %}"></i>
+            <span class="text-sm font-medium">{{ message }}</span>
+            <button type="button" class="ui-toast-close ml-auto">
+              <i class="fa-solid fa-xmark opacity-60 hover:opacity-100"></i>
+            </button>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="p-6 max-w-7xl mx-auto w-full">
+          {% block content %}{% endblock %}
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div id="delete-modal" class="ui-modal hidden" role="dialog" aria-modal="true">
+    <div class="ui-modal-backdrop"></div>
+    <div class="ui-modal-panel" role="document">
+      <div class="ui-modal-icon ui-modal-icon-danger">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+      </div>
+      <div class="min-w-0">
+        <h3 id="delete-title" class="text-base font-semibold text-gray-900">Xác nhận xóa</h3>
+        <p id="delete-message" class="text-sm text-gray-600 mt-1">Bạn có chắc muốn xóa mục này?</p>
+      </div>
+      <div class="ui-modal-actions">
+        <button type="button" id="delete-cancel" class="ui-btn ui-btn-secondary">Hủy</button>
+        <button type="button" id="delete-confirm" class="ui-btn ui-btn-danger">Xóa</button>
+      </div>
+    </div>
+  </div>
+{% else %}
+  {% block auth_content %}{% endblock %}
+{% endif %}
+
+<script src="{% static 'js/main.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

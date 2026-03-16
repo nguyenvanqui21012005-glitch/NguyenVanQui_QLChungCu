@@ -1,0 +1,39 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+    <h3 class="font-semibold text-gray-900 mb-3">Thanh toán hôm nay</h3>
+    <p class="text-sm text-gray-600 mb-1">Số giao dịch: <span class="font-semibold">{{ payments_today_count }}</span></p>
+    <p class="text-sm text-gray-600">Tổng tiền: <span class="font-semibold">{{ payments_today_sum }}</span></p>
+  </div>
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+    <h3 class="font-semibold text-gray-900 mb-3">Việc của tôi</h3>
+    <div class="space-y-2">
+      {% for m in my_tasks %}
+      <div class="flex justify-between text-sm">
+        <span class="text-gray-700">{{ m.title }}</span>
+        <span class="text-gray-500">{{ m.apartment.apartment_number }}</span>
+      </div>
+      {% empty %}
+      <p class="text-sm text-gray-400">Chưa có công việc</p>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+    <h3 class="font-semibold text-gray-900 mb-3">Khách hôm nay</h3>
+    <p class="text-sm text-gray-600 mb-3">Đang ở trong tòa: <span class="font-semibold">{{ current_visitors }}</span></p>
+    <div class="space-y-2">
+      {% for v in today_visitors %}
+      <div class="flex justify-between text-sm">
+        <span class="text-gray-700">{{ v.full_name }}</span>
+        <span class="text-gray-500">{{ v.visit_apartment.apartment_number }}</span>
+      </div>
+      {% empty %}
+      <p class="text-sm text-gray-400">Chưa có khách</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

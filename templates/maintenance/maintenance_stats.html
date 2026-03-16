@@ -1,0 +1,29 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<h2 class="text-lg font-semibold text-gray-900 mb-4">Thống kê bảo trì</h2>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+    <h3 class="font-semibold text-gray-900 mb-3">Theo trạng thái</h3>
+    <div class="space-y-2 text-sm">
+      {% for row in by_status %}
+      <div class="flex justify-between"><span>{{ row.status }}</span><span class="font-medium">{{ row.total }}</span></div>
+      {% empty %}
+      <p class="text-sm text-gray-400">Chưa có dữ liệu</p>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+    <h3 class="font-semibold text-gray-900 mb-3">Theo ưu tiên</h3>
+    <div class="space-y-2 text-sm">
+      {% for row in by_priority %}
+      <div class="flex justify-between"><span>{{ row.priority }}</span><span class="font-medium">{{ row.total }}</span></div>
+      {% empty %}
+      <p class="text-sm text-gray-400">Chưa có dữ liệu</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,59 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-4">
+  <h2 class="text-lg font-semibold text-gray-900">Cư dân</h2>
+  {% if user.profile.role == 'ADMIN' %}
+  <a href="{% url 'resident_create' %}" class="ui-btn ui-btn-primary">Thêm cư dân</a>
+  {% endif %}
+</div>
+
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+  <div class="px-6 py-4 border-b border-gray-100">
+    <form class="flex items-center gap-2">
+      <input name="q" value="{{ q }}" placeholder="Tìm..." class="ui-input max-w-xs">
+      <button class="ui-btn ui-btn-secondary">Tìm</button>
+    </form>
+  </div>
+  <div class="overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Ảnh</th>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Họ tên</th>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">CCCD</th>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">SĐT</th>
+          <th class="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase">Thao tác</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-100">
+        {% for r in page_obj %}
+        <tr>
+          <td class="px-6 py-4">
+            {% if r.avatar %}
+            <img src="{{ r.avatar.url }}" alt="" class="h-10 w-10 rounded-full object-cover border border-gray-200">
+            {% else %}
+            <div class="h-10 w-10 rounded-full bg-gray-100 border border-gray-200"></div>
+            {% endif %}
+          </td>
+          <td class="px-6 py-4 text-sm">{{ r.full_name }}</td>
+          <td class="px-6 py-4 text-sm">{{ r.id_number }}</td>
+          <td class="px-6 py-4 text-sm">{{ r.phone }}</td>
+          <td class="px-6 py-4 text-sm text-right">
+            <div class="ui-action-group">
+              <a href="{% url 'resident_contracts' r.pk %}" class="ui-btn ui-btn-secondary ui-btn-xs">HĐ</a>
+              {% if user.profile.role == 'ADMIN' %}
+              <a href="{% url 'resident_edit' r.pk %}" class="ui-btn ui-btn-secondary ui-btn-xs">Sửa</a>
+              <form method="post" action="{% url 'resident_delete' r.pk %}">{% csrf_token %}<button type="submit" class="ui-btn ui-btn-danger ui-btn-xs js-delete" data-item="{{ r.full_name }}">Xóa</button></form>
+              {% endif %}
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td class="px-6 py-8 text-center text-sm text-gray-400" colspan="5">Không có dữ liệu</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

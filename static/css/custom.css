@@ -1,0 +1,344 @@
+:root {
+  --primary:     #2563EB;
+  --primary-dk:  #1D4ED8;
+  --secondary:   #64748B;
+  --success:     #16A34A;
+  --warning:     #D97706;
+  --danger:      #DC2626;
+  --info:        #0891B2;
+  --bg:          #F8FAFC;
+  --sidebar-bg:  #1E293B;
+  --sidebar-txt: #CBD5E1;
+  --border:      #E5E7EB;
+  --text:        #0F172A;
+  --muted:       #64748B;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.75rem;
+  border-radius: 0.75rem;
+  color: #cbd5e1;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+.sidebar-link:hover {
+  background-color: #334155;
+  color: #ffffff;
+}
+
+.ui-input,
+.ui-select,
+.ui-textarea {
+  width: 100%;
+  border: 1px solid #D1D5DB;
+  border-radius: 0.9rem;
+  padding: 0.72rem 0.9rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: var(--text);
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+  transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+}
+
+.ui-textarea {
+  resize: vertical;
+}
+
+.ui-input::placeholder,
+.ui-textarea::placeholder {
+  color: #94A3B8;
+}
+
+.ui-input:focus,
+.ui-select:focus,
+.ui-textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.14), 0 1px 2px rgba(15, 23, 42, 0.08);
+}
+
+.ui-input:disabled,
+.ui-select:disabled,
+.ui-textarea:disabled {
+  background: #F1F5F9;
+  color: #64748B;
+  cursor: not-allowed;
+}
+
+.ui-select {
+  padding-right: 2.5rem;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, #94A3B8 50%),
+    linear-gradient(135deg, #94A3B8 50%, transparent 50%);
+  background-position: calc(100% - 18px) calc(1em + 2px), calc(100% - 13px) calc(1em + 2px);
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+
+.ui-file {
+  width: 100%;
+  font-size: 0.875rem;
+  color: var(--text);
+}
+
+.ui-file::file-selector-button {
+  border: 1px solid #D1D5DB;
+  background: #F8FAFC;
+  color: #0F172A;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.75rem;
+  margin-right: 0.75rem;
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.ui-file::file-selector-button:hover {
+  background: #EEF2FF;
+  border-color: #C7D2FE;
+}
+
+.ui-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 0.9rem;
+  padding: 0.6rem 0.95rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  line-height: 1.1rem;
+  white-space: nowrap;
+  min-height: 2.5rem;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, box-shadow 150ms ease, transform 80ms ease;
+  user-select: none;
+}
+
+.ui-btn:active {
+  transform: translateY(1px);
+}
+
+.ui-btn-primary {
+  background: var(--primary);
+  color: #ffffff;
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.18);
+}
+
+.ui-btn-primary:hover {
+  background: var(--primary-dk);
+}
+
+.ui-btn-secondary {
+  background: #F1F5F9;
+  color: #0F172A;
+  border: 1px solid #E2E8F0;
+}
+
+.ui-btn-secondary:hover {
+  background: #E2E8F0;
+}
+
+.ui-btn-danger {
+  background: #FEF2F2;
+  color: #B91C1C;
+  border: 1px solid #FECACA;
+}
+
+.ui-btn-danger:hover {
+  background: #FEE2E2;
+}
+
+.ui-btn-sm {
+  padding: 0.5rem 0.8rem;
+  border-radius: 0.85rem;
+  font-size: 0.8125rem;
+  min-height: 2.25rem;
+}
+
+.ui-btn-xs {
+  padding: 0.35rem 0.6rem;
+  border-radius: 0.75rem;
+  font-size: 0.75rem;
+  min-height: 2rem;
+}
+
+.ui-action-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.ui-select-xs {
+  padding: 0.35rem 2rem 0.35rem 0.6rem;
+  border-radius: 0.75rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  box-shadow: none;
+}
+
+table.min-w-full tbody tr:hover {
+  background: #F8FAFC;
+}
+
+table.min-w-full thead th {
+  letter-spacing: 0.06em;
+  font-weight: 700;
+}
+
+.prose a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.ui-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.ui-badge-success {
+  background: #ECFDF5;
+  color: #065F46;
+  border-color: #A7F3D0;
+}
+
+.ui-badge-warning {
+  background: #FFFBEB;
+  color: #92400E;
+  border-color: #FDE68A;
+}
+
+.ui-badge-danger {
+  background: #FEF2F2;
+  color: #991B1B;
+  border-color: #FECACA;
+}
+
+.ui-badge-info {
+  background: #ECFEFF;
+  color: #0E7490;
+  border-color: #A5F3FC;
+}
+
+.ui-badge-muted {
+  background: #F1F5F9;
+  color: #334155;
+  border-color: #E2E8F0;
+}
+
+.ui-toast {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.9rem 1rem;
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+  background: #ffffff;
+  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.16);
+  transform: translateY(-6px);
+  opacity: 0;
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.ui-toast-show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.ui-toast-hide {
+  transform: translateY(-6px);
+  opacity: 0;
+}
+
+.ui-toast-success {
+  border-color: #BBF7D0;
+}
+
+.ui-toast-error {
+  border-color: #FECACA;
+}
+
+.ui-toast-warning {
+  border-color: #FDE68A;
+}
+
+.ui-toast-info {
+  border-color: #BFDBFE;
+}
+
+.ui-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.ui-modal.hidden {
+  display: none;
+}
+
+.ui-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(2, 6, 23, 0.55);
+  backdrop-filter: blur(6px);
+}
+
+.ui-modal-panel {
+  position: relative;
+  width: 100%;
+  max-width: 30rem;
+  border-radius: 1.25rem;
+  background: #ffffff;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 30px 60px rgba(15, 23, 42, 0.2);
+  padding: 1.25rem;
+  display: grid;
+  grid-template-columns: 2.75rem 1fr;
+  grid-template-areas:
+    "icon title"
+    "icon actions";
+  column-gap: 1rem;
+  row-gap: 1rem;
+}
+
+.ui-modal-icon {
+  grid-area: icon;
+  height: 2.75rem;
+  width: 2.75rem;
+  border-radius: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+.ui-modal-icon-danger {
+  background: #FEF2F2;
+  color: #B91C1C;
+  border: 1px solid #FECACA;
+}
+
+.ui-modal-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}

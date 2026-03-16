@@ -1,0 +1,63 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-4">
+  <h2 class="text-lg font-semibold text-gray-900">Báo cáo tài chính</h2>
+  <a href="{% url 'report_export' %}" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium">Xuất Excel</a>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+  <div class="bg-white rounded-xl border border-gray-100 p-4"><p class="text-sm text-gray-500">Tổng hóa đơn</p><p class="text-2xl font-bold">{{ total_invoices }}</p></div>
+  <div class="bg-white rounded-xl border border-gray-100 p-4"><p class="text-sm text-gray-500">Tổng tiền hóa đơn</p><p class="text-2xl font-bold">{{ total_amount }}</p></div>
+  <div class="bg-white rounded-xl border border-gray-100 p-4"><p class="text-sm text-gray-500">Tổng đã thu</p><p class="text-2xl font-bold">{{ total_paid }}</p></div>
+</div>
+
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+  <h3 class="font-semibold text-gray-900 mb-3">Theo trạng thái</h3>
+  <div class="space-y-2 text-sm">
+    {% for row in by_status %}
+    <div class="flex justify-between"><span>{{ row.status }}</span><span class="font-medium">{{ row.total }}</span></div>
+    {% empty %}
+    <p class="text-sm text-gray-400">Chưa có dữ liệu</p>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mt-6">
+  <h3 class="font-semibold text-gray-900 mb-4">Biểu đồ hóa đơn theo trạng thái</h3>
+  {{ status_labels|json_script:"finance-status-labels" }}
+  {{ status_values|json_script:"finance-status-values" }}
+  <div class="h-72">
+    <canvas id="financeStatusChart"></canvas>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+const labelsEl = document.getElementById('finance-status-labels');
+const valuesEl = document.getElementById('finance-status-values');
+const chartEl = document.getElementById('financeStatusChart');
+if (labelsEl && valuesEl && chartEl) {
+  const labels = JSON.parse(labelsEl.textContent);
+  const values = JSON.parse(valuesEl.textContent);
+  new Chart(chartEl, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Số lượng',
+        data: values,
+        backgroundColor: '#2563EB'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } }
+    }
+  });
+}
+</script>
+{% endblock %}

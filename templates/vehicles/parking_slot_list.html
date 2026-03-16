@@ -1,0 +1,48 @@
+{% extends 'base/base.html' %}
+{% load ui_extras %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-4">
+  <h2 class="text-lg font-semibold text-gray-900">Bãi xe</h2>
+  <a href="{% url 'parking_slot_create' %}" class="ui-btn ui-btn-primary">Thêm chỗ</a>
+</div>
+
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+  <div class="overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Số chỗ</th>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Loại</th>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Trạng thái</th>
+          <th class="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase">Thao tác</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-100">
+        {% for s in page_obj %}
+        <tr>
+          <td class="px-6 py-4 text-sm">{{ s.slot_number }}</td>
+          <td class="px-6 py-4 text-sm">{{ s.get_slot_type_display }}</td>
+          <td class="px-6 py-4 text-sm"><span class="ui-badge {{ s.status|badge_class }}">{{ s.get_status_display }}</span></td>
+          <td class="px-6 py-4 text-sm text-right">
+            <div class="ui-action-group">
+              <form method="post" action="{% url 'parking_slot_assign' s.pk %}">{% csrf_token %}
+                {% if s.status == 'AVAILABLE' %}
+                <input type="hidden" name="action" value="occupy">
+                <button class="ui-btn ui-btn-secondary ui-btn-xs" type="submit">Cấp</button>
+                {% else %}
+                <input type="hidden" name="action" value="free">
+                <button class="ui-btn ui-btn-secondary ui-btn-xs" type="submit">Thu</button>
+                {% endif %}
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td class="px-6 py-8 text-center text-sm text-gray-400" colspan="4">Không có dữ liệu</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

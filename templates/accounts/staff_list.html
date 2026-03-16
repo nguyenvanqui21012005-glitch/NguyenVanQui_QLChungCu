@@ -1,0 +1,71 @@
+{% extends 'base/base.html' %}
+{% load ui_extras %}
+
+{% block content %}
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+  <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between gap-4">
+    <form class="flex items-center gap-2">
+      <input type="text" name="q" value="{{ q }}" placeholder="Tìm staff..." class="ui-input max-w-xs">
+      <button class="ui-btn ui-btn-secondary">Tìm</button>
+    </form>
+    <a href="{% url 'staff_create' %}" class="ui-btn ui-btn-primary">Tạo Staff</a>
+  </div>
+  <div class="overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Ảnh</th>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Username</th>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Họ tên</th>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">SĐT</th>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Trạng thái</th>
+          <th class="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase">Thao tác</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-100">
+        {% for u in page_obj %}
+        <tr>
+          <td class="px-6 py-4">
+            {% if u.profile.avatar %}
+            <img src="{{ u.profile.avatar.url }}" alt="" class="h-10 w-10 rounded-full object-cover border border-gray-200">
+            {% else %}
+            <div class="h-10 w-10 rounded-full bg-gray-100 border border-gray-200"></div>
+            {% endif %}
+          </td>
+          <td class="px-6 py-4 text-sm">{{ u.username }}</td>
+          <td class="px-6 py-4 text-sm">{{ u.get_full_name }}</td>
+          <td class="px-6 py-4 text-sm">{{ u.profile.phone|default:"-" }}</td>
+          <td class="px-6 py-4 text-sm">
+            {% if u.is_active %}
+            <span class="ui-badge ui-badge-success">ACTIVE</span>
+            {% else %}
+            <span class="ui-badge ui-badge-muted">DISABLED</span>
+            {% endif %}
+          </td>
+          <td class="px-6 py-4 text-sm text-right">
+            <div class="ui-action-group">
+              <a href="{% url 'staff_edit' u.pk %}" class="ui-btn ui-btn-secondary ui-btn-xs">Sửa</a>
+              <form method="post" action="{% url 'staff_toggle_active' u.pk %}">
+                {% csrf_token %}
+                <button class="ui-btn ui-btn-secondary ui-btn-xs" type="submit">{% if u.is_active %}Tắt{% else %}Bật{% endif %}</button>
+              </form>
+              <form method="post" action="{% url 'staff_reset_password' u.pk %}">
+                {% csrf_token %}
+                <input type="hidden" name="new_password" value="Staff@123">
+                <button class="ui-btn ui-btn-secondary ui-btn-xs" type="submit">Reset</button>
+              </form>
+              <form method="post" action="{% url 'staff_delete' u.pk %}">
+                {% csrf_token %}
+                <button class="ui-btn ui-btn-danger ui-btn-xs js-delete" data-item="{{ u.username }}" type="submit">Xóa</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td class="px-6 py-8 text-center text-sm text-gray-400" colspan="6">Không có dữ liệu</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

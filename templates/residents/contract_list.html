@@ -1,0 +1,55 @@
+{% extends 'base/base.html' %}
+{% load ui_extras %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-4">
+  <h2 class="text-lg font-semibold text-gray-900">Hợp đồng</h2>
+  {% if user.profile.role == 'ADMIN' %}
+  <a href="{% url 'contract_create' %}" class="ui-btn ui-btn-primary">Tạo hợp đồng</a>
+  {% endif %}
+</div>
+
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+  <div class="px-6 py-4 border-b border-gray-100">
+    <form class="flex items-center gap-2">
+      <input name="q" value="{{ q }}" placeholder="Tìm..." class="ui-input max-w-xs">
+      <button class="ui-btn ui-btn-secondary">Tìm</button>
+    </form>
+  </div>
+  <div class="overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Cư dân</th>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Căn</th>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Từ</th>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Đến</th>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Trạng thái</th>
+          <th class="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase">Thao tác</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-100">
+        {% for c in page_obj %}
+        <tr>
+          <td class="px-6 py-4 text-sm">{{ c.resident.full_name }}</td>
+          <td class="px-6 py-4 text-sm">{{ c.apartment.apartment_number }}</td>
+          <td class="px-6 py-4 text-sm">{{ c.start_date }}</td>
+          <td class="px-6 py-4 text-sm">{{ c.end_date }}</td>
+          <td class="px-6 py-4 text-sm"><span class="ui-badge {{ c.status|badge_class }}">{{ c.get_status_display }}</span></td>
+          <td class="px-6 py-4 text-sm text-right">
+            {% if user.profile.role == 'ADMIN' %}
+            <div class="ui-action-group">
+              <form method="post" action="{% url 'contract_activate' c.pk %}">{% csrf_token %}<button class="ui-btn ui-btn-secondary ui-btn-xs" type="submit">Duyệt</button></form>
+              <form method="post" action="{% url 'contract_terminate' c.pk %}">{% csrf_token %}<button class="ui-btn ui-btn-danger ui-btn-xs js-delete" data-item="Hợp đồng #{{ c.pk }}" type="submit">Kết thúc</button></form>
+            </div>
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td class="px-6 py-8 text-center text-sm text-gray-400" colspan="6">Không có dữ liệu</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

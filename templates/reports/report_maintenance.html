@@ -1,0 +1,68 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<h2 class="text-lg font-semibold text-gray-900 mb-4">Báo cáo bảo trì</h2>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+    <h3 class="font-semibold text-gray-900 mb-3">Theo trạng thái</h3>
+    <div class="space-y-2 text-sm">
+      {% for row in by_status %}
+      <div class="flex justify-between"><span>{{ row.status }}</span><span class="font-medium">{{ row.total }}</span></div>
+      {% empty %}
+      <p class="text-sm text-gray-400">Chưa có dữ liệu</p>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+    <h3 class="font-semibold text-gray-900 mb-3">Theo ưu tiên</h3>
+    <div class="space-y-2 text-sm">
+      {% for row in by_priority %}
+      <div class="flex justify-between"><span>{{ row.priority }}</span><span class="font-medium">{{ row.total }}</span></div>
+      {% empty %}
+      <p class="text-sm text-gray-400">Chưa có dữ liệu</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-6">
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+    <h3 class="font-semibold text-gray-900 mb-4">Biểu đồ theo trạng thái</h3>
+    {{ status_labels|json_script:"maint-status-labels" }}
+    {{ status_values|json_script:"maint-status-values" }}
+    <div class="h-72">
+      <canvas id="maintStatusChart"></canvas>
+    </div>
+  </div>
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+    <h3 class="font-semibold text-gray-900 mb-4">Biểu đồ theo ưu tiên</h3>
+    {{ priority_labels|json_script:"maint-priority-labels" }}
+    {{ priority_values|json_script:"maint-priority-values" }}
+    <div class="h-72">
+      <canvas id="maintPriorityChart"></canvas>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+function renderBarChart(canvasId, labelsId, valuesId, color) {
+  const labelsEl = document.getElementById(labelsId);
+  const valuesEl = document.getElementById(valuesId);
+  const canvas = document.getElementById(canvasId);
+  if (!labelsEl || !valuesEl || !canvas) return;
+  const labels = JSON.parse(labelsEl.textContent);
+  const values = JSON.parse(valuesEl.textContent);
+  new Chart(canvas, {
+    type: 'bar',
+    data: { labels, datasets: [{ data: values, backgroundColor: color }] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+  });
+}
+
+renderBarChart('maintStatusChart', 'maint-status-labels', 'maint-status-values', '#0891B2');
+renderBarChart('maintPriorityChart', 'maint-priority-labels', 'maint-priority-values', '#D97706');
+</script>
+{% endblock %}

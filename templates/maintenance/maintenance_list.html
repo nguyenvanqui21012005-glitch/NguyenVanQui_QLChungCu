@@ -1,0 +1,40 @@
+{% extends 'base/base.html' %}
+{% load ui_extras %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-4">
+  <h2 class="text-lg font-semibold text-gray-900">Yêu cầu bảo trì</h2>
+  <a href="{% url 'maintenance_create' %}" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium">Tạo yêu cầu</a>
+</div>
+
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+  <div class="overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Tiêu đề</th>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Căn hộ</th>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Ưu tiên</th>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Trạng thái</th>
+          <th class="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase">Thao tác</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-100">
+        {% for m in page_obj %}
+        <tr>
+          <td class="px-6 py-4 text-sm">{{ m.title }}</td>
+          <td class="px-6 py-4 text-sm">{{ m.apartment.apartment_number }}</td>
+          <td class="px-6 py-4 text-sm"><span class="ui-badge {{ m.priority|badge_class }}">{{ m.get_priority_display }}</span></td>
+          <td class="px-6 py-4 text-sm"><span class="ui-badge {{ m.status|badge_class }}">{{ m.get_status_display }}</span></td>
+          <td class="px-6 py-4 text-sm text-right">
+            <a href="{% url 'maintenance_detail' m.pk %}" class="px-2 py-1 rounded bg-gray-100">Chi tiết</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td class="px-6 py-8 text-center text-sm text-gray-400" colspan="5">Không có dữ liệu</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

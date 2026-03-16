@@ -1,0 +1,21 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 max-w-2xl">
+  <h2 class="text-lg font-semibold text-gray-900 mb-4">Ghi nhận thanh toán</h2>
+  <p class="text-sm text-gray-600 mb-4">{{ invoice.resident.full_name }} — {{ invoice.apartment.apartment_number }} — {{ invoice.fee_type.name }}</p>
+  <p class="text-sm text-gray-600 mb-4">Còn lại: <span class="font-semibold">{{ invoice.remaining }}</span></p>
+  <form method="post" enctype="multipart/form-data" class="space-y-4">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <div><label class="block text-sm font-medium text-gray-700 mb-1">Số tiền</label>{{ form.amount_paid }}{{ form.amount_paid.errors }}</div>
+    <div><label class="block text-sm font-medium text-gray-700 mb-1">Hình thức</label>{{ form.method }}</div>
+    <div><label class="block text-sm font-medium text-gray-700 mb-1">Ghi chú</label>{{ form.note }}</div>
+    <div><label class="block text-sm font-medium text-gray-700 mb-1">Ảnh biên nhận</label>{{ form.receipt_image }}</div>
+    <div class="flex gap-2">
+      <button type="submit" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium">Lưu</button>
+      <a href="{% url 'invoice_detail' invoice.pk %}" class="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium">Hủy</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 max-w-3xl">
+  <h2 class="text-lg font-semibold text-gray-900 mb-4">{% if mode == 'edit' %}Sửa cư dân{% else %}Thêm cư dân{% endif %}</h2>
+  <form method="post" enctype="multipart/form-data" class="space-y-4">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div><label class="block text-sm font-medium text-gray-700 mb-1">Họ tên</label>{{ form.full_name }}</div>
+      <div><label class="block text-sm font-medium text-gray-700 mb-1">CCCD</label>{{ form.id_number }}</div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div><label class="block text-sm font-medium text-gray-700 mb-1">SĐT</label>{{ form.phone }}</div>
+      <div><label class="block text-sm font-medium text-gray-700 mb-1">Email</label>{{ form.email }}</div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div><label class="block text-sm font-medium text-gray-700 mb-1">Ngày sinh</label>{{ form.date_of_birth }}</div>
+      <div><label class="block text-sm font-medium text-gray-700 mb-1">Giới tính</label>{{ form.gender }}</div>
+    </div>
+    <div><label class="block text-sm font-medium text-gray-700 mb-1">Quê quán</label>{{ form.hometown }}</div>
+    <div><label class="block text-sm font-medium text-gray-700 mb-1">Địa chỉ</label>{{ form.permanent_address }}</div>
+    <div><label class="block text-sm font-medium text-gray-700 mb-1">Avatar</label>{{ form.avatar }}</div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div><label class="block text-sm font-medium text-gray-700 mb-1">Liên hệ khẩn cấp</label>{{ form.emergency_contact_name }}</div>
+      <div><label class="block text-sm font-medium text-gray-700 mb-1">SĐT khẩn</label>{{ form.emergency_contact_phone }}</div>
+    </div>
+    <div><label class="block text-sm font-medium text-gray-700 mb-1">Ghi chú</label>{{ form.note }}</div>
+    <div class="flex gap-2">
+      <button type="submit" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium">Lưu</button>
+      <a href="{% url 'resident_list' %}" class="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium">Hủy</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
+

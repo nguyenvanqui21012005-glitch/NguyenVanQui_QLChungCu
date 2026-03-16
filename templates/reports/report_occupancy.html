@@ -1,0 +1,49 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<h2 class="text-lg font-semibold text-gray-900 mb-4">Báo cáo tỷ lệ lấp đầy</h2>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+  <div class="bg-white rounded-xl border border-gray-100 p-4"><p class="text-sm text-gray-500">Tổng căn</p><p class="text-2xl font-bold">{{ total_apartments }}</p></div>
+  <div class="bg-white rounded-xl border border-gray-100 p-4"><p class="text-sm text-gray-500">Đang ở</p><p class="text-2xl font-bold">{{ occupied }}</p></div>
+  <div class="bg-white rounded-xl border border-gray-100 p-4"><p class="text-sm text-gray-500">Trống</p><p class="text-2xl font-bold">{{ available }}</p></div>
+  <div class="bg-white rounded-xl border border-gray-100 p-4"><p class="text-sm text-gray-500">Bảo trì</p><p class="text-2xl font-bold">{{ maintenance }}</p></div>
+</div>
+
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mt-6">
+  <h3 class="font-semibold text-gray-900 mb-4">Biểu đồ tình trạng căn hộ</h3>
+  {{ occupancy_labels|json_script:"occupancy-labels" }}
+  {{ occupancy_values|json_script:"occupancy-values" }}
+  <div class="h-72">
+    <canvas id="occupancyReportChart"></canvas>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+const labelsEl = document.getElementById('occupancy-labels');
+const valuesEl = document.getElementById('occupancy-values');
+const chartEl = document.getElementById('occupancyReportChart');
+if (labelsEl && valuesEl && chartEl) {
+  const labels = JSON.parse(labelsEl.textContent);
+  const values = JSON.parse(valuesEl.textContent);
+  new Chart(chartEl, {
+    type: 'doughnut',
+    data: {
+      labels,
+      datasets: [{
+        data: values,
+        backgroundColor: ['#16A34A', '#2563EB', '#D97706'],
+        borderWidth: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom' } }
+    }
+  });
+}
+</script>
+{% endblock %}

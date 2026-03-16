@@ -1,0 +1,40 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 max-w-2xl">
+  <div class="flex items-center gap-4">
+    {% if profile.avatar %}
+    <img src="{{ profile.avatar.url }}" class="w-16 h-16 rounded-full object-cover" alt="">
+    {% else %}
+    <div class="w-16 h-16 rounded-full bg-blue-600 flex items-center justify-center text-white text-xl font-bold">
+      {{ request.user.first_name.0 }}{{ request.user.last_name.0 }}
+    </div>
+    {% endif %}
+    <div class="flex-1">
+      <p class="text-xl font-bold text-gray-900">{{ request.user.get_full_name }}</p>
+      <p class="text-sm text-gray-500">{{ profile.get_role_display }}</p>
+    </div>
+    <a href="{% url 'profile_edit' %}" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium">Chỉnh sửa</a>
+  </div>
+
+  <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+    <div><p class="text-gray-500">Email</p><p class="text-gray-900">{{ request.user.email|default:"-" }}</p></div>
+    <div><p class="text-gray-500">SĐT</p><p class="text-gray-900">{{ profile.phone|default:"-" }}</p></div>
+    <div><p class="text-gray-500">Ngày sinh</p><p class="text-gray-900">{{ profile.date_of_birth|default:"-" }}</p></div>
+    <div><p class="text-gray-500">Giới tính</p><p class="text-gray-900">{{ profile.get_gender_display|default:"-" }}</p></div>
+  </div>
+
+  <div class="mt-6 flex gap-2">
+    <a href="{% url 'change_password' %}" class="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium">Đổi mật khẩu</a>
+  </div>
+
+  <div class="mt-6">
+    <form method="post" action="{% url 'update_avatar' %}" enctype="multipart/form-data" class="flex items-center gap-3">
+      {% csrf_token %}
+      <input type="file" name="avatar" class="text-sm" accept="image/*" required>
+      <button class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium" type="submit">Đổi avatar</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
