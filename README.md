@@ -8,7 +8,7 @@
 ![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![MySQL](https://img.shields.io/badge/MySQL-8.0+-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.4+-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
+
 
 **Giải pháp quản lý chung cư chuyên nghiệp với đầy đủ tính năng: quản lý cư dân, phí dịch vụ, bảo trì, phương tiện, khách thăm, thông báo và báo cáo chi tiết.**
 
