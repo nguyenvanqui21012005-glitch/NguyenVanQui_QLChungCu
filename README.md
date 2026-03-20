@@ -640,25 +640,7 @@ chmod -R 755 /path/to/project
 # Windows: Chạy CMD as Administrator
 ```
 
----
 
-## 🤝 Đóng Góp
-
-Chúng tôi hoan nghênh các pull request! Để đóng góp:
-
-1. **Fork** repository này
-2. Tạo **feature branch** (`git checkout -b feature/AmazingFeature`)
-3. **Commit** thay đổi (`git commit -m 'Add some AmazingFeature'`)
-4. **Push** branch (`git push origin feature/AmazingFeature`)
-5. Mở **Pull Request**
-
-### Coding Standards
-- Follow PEP 8 cho Python code
-- Sử dụng meaningful commit messages
-- Viết tests cho features mới
-- Update documentation
-
----
 
 ## 📋 Roadmap
 
@@ -677,18 +659,14 @@ Chúng tôi hoan nghênh các pull request! Để đóng góp:
 
 ## 📞 Liên Hệ & Support
 
-- **Email**: support@apartmentms.com
+- **Email**: Nguyenvanqui21012005@gmail.com
 - **Website**: [http://103.216.118.156:8000/](http://103.216.118.156:8000/)
-- **Issues**: [GitHub Issues](https://github.com/yourusername/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/discussions)
+- **Issues**: [GitHub Issues](https://github.com/nguyenvanqui21012005-glitch/NguyenVanQui_QLChungCu/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/nguyenvanqui21012005-glitch/NguyenVanQui_QLChungCu/discussions)
 
 ---
 
-## 📄 License
 
-Dự án này được cấp phép dưới [MIT License](LICENSE). Xem file `LICENSE` để chi tiết.
-
----
 
 ## 👏 Credit & Acknowledgments
 
